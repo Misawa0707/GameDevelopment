@@ -4,6 +4,8 @@
 
 #include "pch.h"
 #include "Game.h"
+#include <sstream>
+
 
 extern void ExitGame();
 
@@ -36,6 +38,11 @@ void Game::Initialize(HWND window, int width, int height)
     m_timer.SetFixedTimeStep(true);
     m_timer.SetTargetElapsedSeconds(1.0 / 60);
     */
+
+	m_spriteBatch = std::make_unique<SpriteBatch>(m_d3dContext.Get());
+	m_spriteFont = std::make_unique<SpriteFont>(m_d3dDevice.Get(),
+		L"Resources/myfile.spritefont");
+	m_count = 0;
 }
 
 // Executes the basic game loop.
@@ -56,6 +63,16 @@ void Game::Update(DX::StepTimer const& timer)
 
     // TODO: Add your game logic here.
     elapsedTime;
+	//カウンタを進める
+	m_count++;
+	//文字列に代入
+	//m_str = L"asdfghjk";
+	std::wstringstream ss;
+	//ストリングストリームに出力
+	ss << L"aiueo"<<m_count;
+	//ストリングストリームから文字列の取得
+	m_str = ss.str();
+	
 }
 
 // Draws the scene.
@@ -70,6 +87,20 @@ void Game::Render()
     Clear();
 
     // TODO: Add your rendering code here.
+
+	m_spriteBatch->Begin();
+	m_spriteFont->DrawString(m_spriteBatch.get(),
+		L"Hello, world!",
+		XMFLOAT2(100, 100),
+		Colors::RoyalBlue,
+		m_count/10.0f
+
+		);
+	m_spriteFont->DrawString(m_spriteBatch.get(),
+		m_str.c_str(),
+		XMFLOAT2(250, 400)
+	);
+	m_spriteBatch->End();
 
     Present();
 }
