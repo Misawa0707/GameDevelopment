@@ -5,7 +5,9 @@
 #include "pch.h"
 #include "Game.h"
 #include <sstream>
-
+#include <WICTextureLoader.h>
+#include <DDSTextureLoader.h>
+#include <CommonStates.h>
 
 extern void ExitGame();
 
@@ -41,8 +43,29 @@ void Game::Initialize(HWND window, int width, int height)
 
 	m_spriteBatch = std::make_unique<SpriteBatch>(m_d3dContext.Get());
 	m_spriteFont = std::make_unique<SpriteFont>(m_d3dDevice.Get(),
-		L"Resources/myfile.spritefont");
+		L"Rsources/myfile.spritefont");
+
 	m_count = 0;
+	//テクスチャ
+	ComPtr<ID3D11Resource> resource;
+	DX::ThrowIfFailed(
+		CreateDDSTextureFromFile(m_d3dDevice.Get(), L"Rsources/cat.dds",
+			resource.GetAddressOf(),
+			m_texture.ReleaseAndGetAddressOf()));
+
+	//猫のテクスチャ
+	ComPtr<ID3D11Texture2D> cat;
+	DX::ThrowIfFailed(resource.As(&cat));
+	//テクスチャの情報
+	CD3D11_TEXTURE2D_DESC catDesc;
+	cat->GetDesc(&catDesc);
+	//テクスチャの原点を中心にする
+	m_origin.x = float(catDesc.Width / 2);
+	m_origin.y = float(catDesc.Height / 2);
+	//表示座標の調整
+	m_screenPos.x = m_outputHeight / 2.f;
+	m_screenPos.y = m_outputWidth / 2.f;
+
 }
 
 // Executes the basic game loop.
@@ -87,19 +110,38 @@ void Game::Render()
     Clear();
 
     // TODO: Add your rendering code here.
+	CommonStates states(m_d3dDevice.Get());
+	m_spriteBatch->Begin(SpriteSortMode_Deferred,states.NonPremultiplied());
 
-	m_spriteBatch->Begin();
+	//テクスチャの切り取り
+	RECT rect;
+	rect.left = 30;
+	rect.right = 30;
+	rect.top = 30;
+	rect.bottom = 30;
+
+	//スプライトの描画
+	m_spriteBatch->Draw(m_texture.Get(),
+		m_screenPos,   //表示位置
+		nullptr,	   //画像の切り取りなど
+		Colors::White, //色
+		XMConvertToRadians(90.0),		   //回転角
+		m_origin
+		);
+	//XMConvertToRadians(90,0))ラジアンにする
+	//文字の描画
 	m_spriteFont->DrawString(m_spriteBatch.get(),
-		L"Hello, world!",
-		XMFLOAT2(100, 100),
-		Colors::RoyalBlue,
-		m_count/10.0f
+		L"Hello, world!",  //出す文字
+		XMFLOAT2(100, 100),//表示位置
+		Colors::RoyalBlue, //色
+		m_count/10.0f	   //回す
 
 		);
 	m_spriteFont->DrawString(m_spriteBatch.get(),
 		m_str.c_str(),
 		XMFLOAT2(250, 400)
 	);
+	
 	m_spriteBatch->End();
 
     Present();

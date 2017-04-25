@@ -6,6 +6,7 @@
 
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
+#include "SimpleMath.h"
 #include "StepTimer.h"
 
 
@@ -62,6 +63,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  m_renderTargetView;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  m_depthStencilView;
 
+
     // Rendering loop timer.
     DX::StepTimer                                   m_timer;
 
@@ -73,5 +75,9 @@ private:
 	std::wstring m_str;
 	//カウンタ
 	int m_count;
+	//テクスチャ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	DirectX::SimpleMath::Vector2 m_screenPos;
+	DirectX::SimpleMath::Vector2 m_origin;
 
 };
