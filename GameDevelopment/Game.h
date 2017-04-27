@@ -77,7 +77,9 @@ private:
 	int m_count;
 	//テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	//表示位置情報
 	DirectX::SimpleMath::Vector2 m_screenPos;
+	//テクスチャの原点
 	DirectX::SimpleMath::Vector2 m_origin;
 
 };

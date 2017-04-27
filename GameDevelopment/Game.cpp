@@ -46,7 +46,14 @@ void Game::Initialize(HWND window, int width, int height)
 		L"Rsources/myfile.spritefont");
 
 	m_count = 0;
-	//テクスチャ
+	//rテクスチャ
+	/*ComPtr<ID3D11Resource> resource;
+	DX::ThrowIfFailed(
+		CreateWICTextureFromFile(m_d3dDevice.Get(), L"cat.png",
+			resource.GetAddressOf(),
+			m_texture.ReleaseAndGetAddressOf()));
+	*/
+	//ddsを使ったテクスチャ
 	ComPtr<ID3D11Resource> resource;
 	DX::ThrowIfFailed(
 		CreateDDSTextureFromFile(m_d3dDevice.Get(), L"Rsources/cat.dds",
@@ -111,24 +118,26 @@ void Game::Render()
 
     // TODO: Add your rendering code here.
 	CommonStates states(m_d3dDevice.Get());
+	//ddsを使わないでBeing()の中で処理することで見栄えが良くなる
 	m_spriteBatch->Begin(SpriteSortMode_Deferred,states.NonPremultiplied());
 
 	//テクスチャの切り取り
 	RECT rect;
-	rect.left = 30;
-	rect.right = 30;
-	rect.top = 30;
+	//各場所の範囲指定
+	rect.left   = 30;
+	rect.right  = 30;
+	rect.top    = 30;
 	rect.bottom = 30;
 
 	//スプライトの描画
 	m_spriteBatch->Draw(m_texture.Get(),
-		m_screenPos,   //表示位置
-		nullptr,	   //画像の切り取りなど
-		Colors::White, //色
-		XMConvertToRadians(90.0),		   //回転角
+		m_screenPos,			   //表示位置
+		nullptr,				   //画像の切り取りなど(nullptrをrectに変えると指定した大きさになる)
+		Colors::White,			   //色
+		XMConvertToRadians(90.0),  //回転角
 		m_origin
 		);
-	//XMConvertToRadians(90,0))ラジアンにする
+	//XMConvertToRadians(90,0))ラジアンにする処理の例
 	//文字の描画
 	m_spriteFont->DrawString(m_spriteBatch.get(),
 		L"Hello, world!",  //出す文字
@@ -138,8 +147,8 @@ void Game::Render()
 
 		);
 	m_spriteFont->DrawString(m_spriteBatch.get(),
-		m_str.c_str(),
-		XMFLOAT2(250, 400)
+		m_str.c_str(),	  //ストリングストリームからの描画
+		XMFLOAT2(250, 400)//表示位置
 	);
 	
 	m_spriteBatch->End();
