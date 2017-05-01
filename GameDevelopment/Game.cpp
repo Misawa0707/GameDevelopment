@@ -72,6 +72,8 @@ void Game::Initialize(HWND window, int width, int height)
 	//表示座標の調整
 	m_screenPos.x = m_outputHeight / 2.f;
 	m_screenPos.y = m_outputWidth / 2.f;
+	//キーボードのオブジェクト生成
+	m_keyboard = std::make_unique<Keyboard>();
 
 }
 
@@ -89,20 +91,44 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
-    float elapsedTime = float(timer.GetElapsedSeconds());
+	float elapsedTime = float(timer.GetElapsedSeconds());
 
-    // TODO: Add your game logic here.
-    elapsedTime;
+	// TODO: Add your game logic here.
+	elapsedTime;
 	//カウンタを進める
 	m_count++;
 	//文字列に代入
 	//m_str = L"asdfghjk";
 	std::wstringstream ss;
 	//ストリングストリームに出力
-	ss << L"aiueo"<<m_count;
+	ss << L"aiueo" << m_count;
 	//ストリングストリームから文字列の取得
 	m_str = ss.str();
+
+	Keyboard::State kb = m_keyboard->GetState();
+	//キーボードｖトラッカーの更新
+	m_keyboardtracker.Update(kb);
+
+	if (kb.Back)
+	{	
+		// Backspace key is down
+		m_str = L"BackSpace!";
+	}
+	//押したとき
+	if (m_keyboardtracker.pressed.Space)
+	{
+		m_str = L"Space!";
+	}
+
+		// Space was just pressed down
+		//離した時
+		if (m_keyboardtracker.IsKeyReleased(Keyboard::Keys::A))
+		{
+			m_str = L"aaaaaaaaaaaa";
+		}
 	
+			// F1 key was just released
+
 }
 
 // Draws the scene.
