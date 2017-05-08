@@ -74,6 +74,10 @@ void Game::Initialize(HWND window, int width, int height)
 	m_screenPos.y = m_outputWidth / 2.f;
 	//キーボードのオブジェクト生成
 	m_keyboard = std::make_unique<Keyboard>();
+	//マウスのオブジェクト生成
+	m_mouse = std::make_unique<Mouse>();
+	//windowハンドラを通知
+	m_mouse->SetWindow(window);
 
 }
 
@@ -128,7 +132,30 @@ void Game::Update(DX::StepTimer const& timer)
 		}
 	
 			// F1 key was just released
+		//マウスの状態を取得
+		Mouse::State state = m_mouse->GetState();
+		m_tracker.Update(state);
 
+		if (m_tracker.rightButton == Mouse::ButtonStateTracker::HELD)
+		{
+			m_str = L"HelloWrold";
+		}
+		// Left button is down
+		//マウスの座標
+		XMFLOAT2 mousePosInPixels(float(state.x), float(state.y));
+		//テクスチャの座標をマウスの位置にする
+		m_screenPos = mousePosInPixels;
+
+		//パスの切り替え
+		if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::PRESSED)
+		{
+			m_mouse->SetMode(Mouse::MODE_RELATIVE);
+		}
+		else if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::RELEASED)
+		{
+			m_mouse->SetMode(Mouse::MODE_ABSOLUTE);
+		}
+	
 }
 
 // Draws the scene.
@@ -160,7 +187,7 @@ void Game::Render()
 		m_screenPos,			   //表示位置
 		nullptr,				   //画像の切り取りなど(nullptrをrectに変えると指定した大きさになる)
 		Colors::White,			   //色
-		XMConvertToRadians(90.0),  //回転角
+		XMConvertToRadians(0.0),  //回転角
 		m_origin
 		);
 	//XMConvertToRadians(90,0))ラジアンにする処理の例

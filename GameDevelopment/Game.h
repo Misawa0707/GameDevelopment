@@ -9,7 +9,7 @@
 #include "SimpleMath.h"
 #include "StepTimer.h"
 #include <Keyboard.h>
-
+#include<Mouse.h>
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -86,5 +86,9 @@ private:
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;
 	//キーボードトラッカー
 	DirectX::Keyboard::KeyboardStateTracker m_keyboardtracker;
+	//マウス
+	std::unique_ptr<DirectX::Mouse> m_mouse;
+	//マウストラッカー
+	DirectX::Mouse::ButtonStateTracker m_tracker;
 
 };
