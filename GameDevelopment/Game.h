@@ -19,6 +19,8 @@ public:
 
     Game();
 
+	virtual ~Game();
+
     // Initialization and management
     void Initialize(HWND window, int width, int height);
 

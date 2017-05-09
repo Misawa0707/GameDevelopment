@@ -8,6 +8,8 @@
 #include <WICTextureLoader.h>
 #include <DDSTextureLoader.h>
 #include <CommonStates.h>
+#include "ADX2Le.h"
+#include "Rsources\Music\Basic.h"
 
 extern void ExitGame();
 
@@ -21,6 +23,12 @@ Game::Game() :
     m_outputHeight(600),
     m_featureLevel(D3D_FEATURE_LEVEL_9_1)
 {
+}
+
+Game::~Game()
+{
+	//サウンドライブラリの終了処理
+	ADX2Le::Finalize();
 }
 
 // Initialize the Direct3D resources required to run.
@@ -79,6 +87,12 @@ void Game::Initialize(HWND window, int width, int height)
 	//windowハンドラを通知
 	m_mouse->SetWindow(window);
 
+	//ACFファイルの読み込み
+	ADX2Le::Initialize("Rsources/Music/ADX2_samples.acf");
+	//ACBとAWBを読み込む
+	ADX2Le::LoadAcb("Rsources/Music/Basic.acb", "Rsources/Music/Basic.awb");
+	//曲を流す
+	ADX2Le::Play(CRI_BASIC_MUSIC1);
 }
 
 // Executes the basic game loop.
@@ -95,6 +109,9 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
+	//サウンドライブラリの舞フレーム更新
+	ADX2Le::Update();
+
 	float elapsedTime = float(timer.GetElapsedSeconds());
 
 	// TODO: Add your game logic here.
