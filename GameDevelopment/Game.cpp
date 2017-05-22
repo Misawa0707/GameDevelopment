@@ -93,6 +93,13 @@ void Game::Initialize(HWND window, int width, int height)
 	ADX2Le::LoadAcb("Rsources/Music/Basic.acb", "Rsources/Music/Basic.awb");
 	//曲を流す
 	ADX2Le::Play(CRI_BASIC_MUSIC1);
+
+	//ゲームパットのオブジェクト生成
+	m_gamePad = std::make_unique<GamePad>();
+
+	m_pJoyPad = std::make_unique<JoyPad>();
+	m_pJoyPad->Initialize(window);
+
 }
 
 // Executes the basic game loop.
@@ -112,6 +119,8 @@ void Game::Update(DX::StepTimer const& timer)
 	//サウンドライブラリの舞フレーム更新
 	ADX2Le::Update();
 
+	m_pJoyPad->Update();
+
 	float elapsedTime = float(timer.GetElapsedSeconds());
 
 	// TODO: Add your game logic here.
@@ -122,7 +131,7 @@ void Game::Update(DX::StepTimer const& timer)
 	//m_str = L"asdfghjk";
 	std::wstringstream ss;
 	//ストリングストリームに出力
-	ss << L"aiueo" << m_count;
+//	ss << L"aiueo" << m_count;
 	//ストリングストリームから文字列の取得
 	m_str = ss.str();
 
@@ -155,7 +164,7 @@ void Game::Update(DX::StepTimer const& timer)
 
 		if (m_tracker.rightButton == Mouse::ButtonStateTracker::HELD)
 		{
-			m_str = L"HelloWrold";
+			//m_str = L"HelloWrold";
 		}
 		// Left button is down
 		//マウスの座標
@@ -172,7 +181,58 @@ void Game::Update(DX::StepTimer const& timer)
 		{
 			m_mouse->SetMode(Mouse::MODE_ABSOLUTE);
 		}
-	
+		//Xboxのコントローラー
+		//ゲームパットの状態取得
+		/*DirectX::GamePad::State padstate = m_gamePad->GetState(0, GamePad::DEAD_ZONE_CIRCULAR);
+		m_gamepadtracker.Update(padstate);*/
+		//接続確認
+		//if (padstate.IsConnected())
+		//{
+		//	//Aボタンが押されているか
+		//	if (padstate.IsAPressed())
+		//	{
+		//		//今押されている
+		//		
+		//	}
+		//	if (padstate.IsBPressed())
+		//	{
+		//		//今押されている
+		//		m_str = L"sssssss";
+
+		//	}
+		//	if (padstate.IsDPadDownPressed())
+		//	{
+		//		//今押されている
+		//	}
+		//	//左スティック左右(0~1)
+		//	float posx = padstate.thumbSticks.leftX;
+		//	//左スティック上下(0~1)
+		//	float posy = padstate.thumbSticks.leftY;
+		//	//右トリガーがどれだけ押されたか(0~1)
+		//	float throttle = padstate.triggers.right;
+
+		//	if (padstate.IsViewPressed())
+		//	{
+		//		
+
+		//		// This is an alias for the Xbox 360 'Back' button
+		//		// which is called 'View' on the Xbox One controller
+		//	}
+		//	//デバイスの能力
+		//	//GamePad::Capabilities caps = gamePad->GetCapabilities(0);
+		//
+		//		
+		//	if (m_gamepadtracker.back ==GamePad::ButtonStateTracker::PRESSED)
+		//	{
+		//		
+		//	}
+		//	else if (m_gamepadtracker.back == GamePad::ButtonStateTracker::PRESSED)
+		//	{
+		//		m_gamepadtracker.Reset();
+		//		
+		//	}
+		//}
+		
 }
 
 // Draws the scene.
